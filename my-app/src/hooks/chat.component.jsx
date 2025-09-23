@@ -9,44 +9,18 @@ export const ChatComponent = () => {
   const [shouldSend, setShouldSend] = useState(false);
   const { data, isLoading, error } = useQueryChat(message, shouldSend);
 
-  // Debug: mostrar estados en consola
-  console.log("Estado actual:", {
-    message,
-    shouldSend,
-    data,
-    isLoading,
-    error,
-  });
-
-  // Debug: verificar si la query debería ejecutarse
-  useEffect(() => {
-    console.log("shouldSend cambió:", {
-      shouldSend,
-      type: typeof shouldSend,
-      message,
-    });
-    if (shouldSend && message) {
-      console.log("Query debería ejecutarse:", { shouldSend, message });
-    }
-  }, [shouldSend, message]);
-
   const handleInputChange = (e) => {
     setMessage(e.target.value);
   };
 
   const handleSendMessage = (messageToSend) => {
     if (messageToSend.trim()) {
-      // Agregar mensaje del usuario
       setMessages((prevMessages) => [
         ...prevMessages,
         { id: prevMessages.length + 1, text: messageToSend, sender: "user" },
       ]);
-
-      // Configurar la query con el mensaje
       setMessage(messageToSend);
       setShouldSend(true);
-
-      // NO limpiar el mensaje aquí, se limpiará después de la respuesta
     }
   };
 
@@ -61,15 +35,14 @@ export const ChatComponent = () => {
         },
       ]);
       setShouldSend(false);
-      setMessage(""); // Limpiar el input después de recibir la respuesta
+      setMessage("");
     }
   }, [data]);
 
-  // Resetear shouldSend si hay error
   useEffect(() => {
     if (error) {
       setShouldSend(false);
-      setMessage(""); // Limpiar el input también en caso de error
+      setMessage("");
     }
   }, [error]);
 
