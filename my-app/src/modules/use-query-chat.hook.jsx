@@ -7,11 +7,6 @@ export const useQueryChat = (message, enabled = false) => {
     networkMode: "online",
     enabled: Boolean(enabled) && Boolean(message) && message.trim().length > 0,
     queryFn: async () => {
-      console.log("Haciendo llamada a OpenAI...", {
-        url: ConfigService.getChatApiUrl(),
-        key: ConfigService.getChatApiKey() ? "presente" : "faltante",
-      });
-
       const response = await fetch(ConfigService.getChatApiUrl(), {
         method: "POST",
         headers: {
@@ -36,7 +31,6 @@ export const useQueryChat = (message, enabled = false) => {
       }
 
       const result = await response.json();
-      console.log("Respuesta de OpenAI:", result);
       return result.choices[0].message.content;
     },
   });

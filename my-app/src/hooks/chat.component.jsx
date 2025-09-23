@@ -5,9 +5,10 @@ import { useQueryChat } from "../modules/use-query-chat.hook";
 export const ChatComponent = () => {
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
+  const [messageToSend, setMessageToSend] = useState("");
 
   const [shouldSend, setShouldSend] = useState(false);
-  const { data, isLoading, error } = useQueryChat(message, shouldSend);
+  const { data, isLoading, error } = useQueryChat(messageToSend, shouldSend);
 
   const handleInputChange = (e) => {
     setMessage(e.target.value);
@@ -19,7 +20,10 @@ export const ChatComponent = () => {
         ...prevMessages,
         { id: prevMessages.length + 1, text: messageToSend, sender: "user" },
       ]);
-      setMessage(messageToSend);
+
+      setMessage("");
+
+      setMessageToSend(messageToSend);
       setShouldSend(true);
     }
   };
@@ -35,21 +39,18 @@ export const ChatComponent = () => {
         },
       ]);
       setShouldSend(false);
-      setMessage("");
     }
   }, [data]);
 
   useEffect(() => {
     if (error) {
       setShouldSend(false);
-      setMessage("");
     }
   }, [error]);
 
   return (
     <div>
       <div>
-        {isLoading && <div>Loading...</div>}
         {error && <div>Error: {error.message}</div>}
         {messages.map((message) => (
           <div key={message.id}>
@@ -60,6 +61,7 @@ export const ChatComponent = () => {
             )}
           </div>
         ))}
+        {isLoading && <div>Typing...</div>}
       </div>
       <div>
         <InputComponent value={message} onChange={handleInputChange} />
