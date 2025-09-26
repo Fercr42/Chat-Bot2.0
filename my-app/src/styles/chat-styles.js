@@ -42,51 +42,30 @@ export const chatStyles = {
   toggleButton:
     "bg-gray-700 text-white text-xs sm:text-sm p-2 sm:p-3 rounded-md hover:bg-gray-500 transition-colors cursor-pointer",
 
+  // Navegación dentro del menú
+  menuItems:
+    "flex justify-around bg-gray-800 items-center py-4 px-2 border-t border-gray-700 mt-auto",
+  navItem:
+    "flex flex-col items-center justify-center py-2 px-2 cursor-pointer min-w-0 flex-1 text-white hover:text-gray-400 transition-all duration-300",
+
   // Estilos del menú
-
   menuContent:
-    "bg-gray-400 rounded-2xl shadow-2xl border border-gray-700 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-[600px] sm:h-[500px] md:h-[600px] lg:h-[700px] flex flex-col p-6 space-y-4 mx-auto",
-  menuHeader:
-    "text-white text-lg font-bold mb-4 border-b border-gray-700 pb-3 text-center",
-  menuChatList:
-    "space-y-3 flex-1 overflow-y-auto bg-gray-100 rounded-xl p-4 border-2 border-gray-300 shadow-inner",
-  menuChatItem:
-    "flex items-center justify-between p-4 bg-gradient-to-r from-white to-gray-50 rounded-2xl hover:from-blue-50 hover:to-blue-100 transition-all duration-300 cursor-pointer border-2 border-gray-200 hover:border-blue-400 shadow-lg hover:shadow-xl transform hover:scale-105 hover:-translate-y-1 backdrop-blur-sm",
-  menuChatTitle:
-    "text-gray-800 text-sm font-bold truncate flex-1 hover:text-blue-600 transition-colors duration-200",
-  menuChatDate:
-    "text-gray-500 text-xs ml-2 bg-gray-100 px-2 py-1 rounded-full hover:bg-blue-100 hover:text-blue-600 transition-all duration-200",
-  menuActions: "space-y-3 pt-4 border-t border-gray-700 flex-shrink-0",
+    "bg-gray-900 relative rounded-3xl shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-[600px] sm:h-[500px] md:h-[600px] lg:h-[700px] flex flex-col mx-auto overflow-hidden",
+  menuTitle: "text-white text-2xl font-bold mb-2 px-6 pt-6",
   menuCreateButton:
-    "w-full bg-gradient-to-r from-blue-500 to-blue-600 text-white px-6 py-4 rounded-2xl hover:from-blue-600 hover:to-blue-700 transition-all duration-300 cursor-pointer text-center font-bold shadow-xl hover:shadow-2xl transform hover:scale-105 active:scale-95 border-2 border-blue-400 hover:border-blue-300",
-  menuDeleteButton:
-    "w-full bg-gradient-to-r from-red-600 to-red-700 text-white px-6 py-3 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 cursor-pointer text-center font-semibold shadow-lg hover:shadow-xl",
-  menuEmptyState:
-    "text-gray-400 text-sm text-center py-8 flex-1 flex items-center justify-center",
-
-  // Items del menú
-  menuItem:
-    "bg-gray-800 text-white px-4 py-3 rounded-xl hover:bg-gray-700 transition-all duration-300 cursor-pointer border border-gray-700 hover:border-gray-600 font-medium",
+    "w-3/4 bg-blue-600 text-white px-6 py-4 rounded-2xl hover:bg-blue-700 transition-all duration-300 cursor-pointer text-center font-semibold mx-auto",
+  menuChatItem:
+    "flex items-center justify-between p-4 bg-gray-800 rounded-2xl hover:bg-gray-700 transition-all duration-300 cursor-pointer border border-gray-700 mx-6 mb-2",
   menuItemDelete:
-    "bg-gradient-to-r from-red-600 to-red-700 text-white px-4 py-3 rounded-xl hover:from-red-700 hover:to-red-800 transition-all duration-300 cursor-pointer font-semibold shadow-lg hover:shadow-xl",
+    "bg-red-600 text-white px-3 py-2 rounded-lg hover:bg-red-700 transition-all duration-300 cursor-pointer text-xs font-medium",
   menuItemLoad:
-    "bg-gradient-to-r from-green-600 to-green-700 text-white px-4 py-3 rounded-xl hover:from-green-700 hover:to-green-800 transition-all duration-300 cursor-pointer font-semibold shadow-lg hover:shadow-xl",
-};
+    "bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-700 transition-all duration-300 cursor-pointer text-xs font-medium",
 
-// Estilos del componente Button
-export const buttonStyles = {
-  primary:
-    "bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition-colors",
-  secondary:
-    "bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition-colors",
-  transparent:
-    "bg-transparent text-white px-4 py-2 rounded-md hover:bg-gray-700 transition-colors",
-};
+  // Barra de navegación inferior
 
-// Estilos del componente Input
-export const inputStyles = {
-  primary:
-    "w-full bg-gray-700 text-white p-2 rounded-md border-none outline-none focus:ring-2 focus:ring-blue-500",
-  transparent:
-    "flex-1 bg-transparent text-white p-2 rounded-md border-none outline-none",
+  navItemActive: "text-white",
+  navItemInactive: "text-gray-500",
+
+  navIcon: "w-6 h-6 mb-1",
+  navText: "text-xs font-medium truncate",
 };

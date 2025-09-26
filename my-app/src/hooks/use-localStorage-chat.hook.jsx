@@ -3,27 +3,55 @@ import { useState, useEffect } from "react";
 export const useLocalStorageChat = () => {
   const [chats, setChats] = useState([]);
 
-  // Asegurar que chats siempre sea un array
   useEffect(() => {
-    if (!Array.isArray(chats)) {
-      setChats([]);
-    }
-  }, [chats]);
-
-  //    guardar un chat
-  const saveChat = (chat) => {
-    const newChat = {
-      id: chat.id,
-      messages: chat.messages,
-      createdAt: chat.createdAt,
-      updatedAt: chat.updatedAt,
+    const loadInitialChats = () => {
+      const storedChats = localStorage.getItem("chats");
+      if (storedChats) {
+        try {
+          const parsedChats = JSON.parse(storedChats);
+          if (Array.isArray(parsedChats)) {
+            setChats(parsedChats);
+          } else {
+            setChats([]);
+          }
+        } catch (error) {
+          console.error("Error parsing stored chats:", error);
+          setChats([]);
+        }
+      }
     };
+    loadInitialChats();
+  }, []);
 
-    localStorage.setItem("chats", JSON.stringify(chat));
-    setChats(chat);
+  const saveChat = (chat) => {
+    let storageChats = localStorage.getItem("chats");
+    let existingChats = [];
+
+    if (storageChats) {
+      try {
+        existingChats = JSON.parse(storageChats);
+        if (!Array.isArray(existingChats)) {
+          existingChats = [];
+        }
+      } catch (error) {
+        console.error("Error parsing stored chats:", error);
+        existingChats = [];
+      }
+    }
+
+    const existingChatIndex = existingChats.findIndex((c) => c.id === chat.id);
+
+    let updatedChats;
+    if (existingChatIndex >= 0) {
+      updatedChats = [...existingChats];
+      updatedChats[existingChatIndex] = chat;
+    } else {
+      updatedChats = [...existingChats, chat];
+    }
+    localStorage.setItem("chats", JSON.stringify(updatedChats));
+    setChats(updatedChats);
   };
 
-  //    eliminar un chat específico
   const clearChat = (chatId) => {
     let storageChats = localStorage.getItem("chats");
     if (storageChats) {
@@ -34,26 +62,12 @@ export const useLocalStorageChat = () => {
     }
   };
 
-  //    cargar un chat específico
   const loadChat = (chatId) => {
     let storageChats = localStorage.getItem("chats");
     if (storageChats) {
       const allChats = JSON.parse(storageChats);
-      const filteredChats = allChats.filter((chat) => chat.id === chatId);
-      localStorage.setItem("chats", JSON.stringify(filteredChats));
-      setChats(filteredChats);
-      return filteredChats;
-    }
-    return [];
-  };
-
-  //    obtener todos los chats
-  const getChats = () => {
-    let storageChats = localStorage.getItem("chats");
-    if (storageChats) {
-      const parsedChats = JSON.parse(storageChats);
-      setChats(parsedChats);
-      return parsedChats;
+      const selectedChat = allChats.find((chat) => chat.id === chatId);
+      return selectedChat ? selectedChat.messages : [];
     }
     return [];
   };
@@ -62,8 +76,6 @@ export const useLocalStorageChat = () => {
     saveChat,
     clearChat,
     loadChat,
-    getChats,
     chats,
-    setChats,
   };
 };

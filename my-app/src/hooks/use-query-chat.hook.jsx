@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import ConfigService from "../services/env-services";
 
 export const useQueryChat = (message, enabled = false) => {
-  const { data, isLoading, error, refetch } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: ["chat", message],
     networkMode: "online",
     enabled: Boolean(enabled) && Boolean(message) && message.trim().length > 0,
@@ -34,5 +34,5 @@ export const useQueryChat = (message, enabled = false) => {
       return result.choices[0].message.content;
     },
   });
-  return { data, isLoading, error, refetch };
+  return { data, isLoading, error };
 };

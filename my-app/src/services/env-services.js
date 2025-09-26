@@ -1,9 +1,12 @@
+import API_CONFIG from "../config/api-config.js";
+
 class ConfigService {
   getChatApiKey() {
-    return import.meta.env.VITE_CHAT_API_KEY;
+    return API_CONFIG.OPENAI_API_KEY;
   }
+
   getChatApiUrl() {
-    return import.meta.env.VITE_CHAT_API_URL;
+    return API_CONFIG.OPENAI_API_URL;
   }
 
   getChatApiConfig() {

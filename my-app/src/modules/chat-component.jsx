@@ -5,92 +5,101 @@ import { chatStyles } from "../styles/chat-styles.js";
 import { useLocalStorageChat } from "../hooks/use-localStorage-chat.hook.jsx";
 
 export const ChatComponent = () => {
-  const [messages, setMessages] = useState([]);
-  const [message, setMessage] = useState("");
+  const [currentView, setCurrentView] = useState("closed");
+  const [chatMessages, setChatMessages] = useState([]);
+  const [currentChatId, setCurrentChatId] = useState(null);
+  const [messageInput, setMessageInput] = useState("");
   const [messageToSend, setMessageToSend] = useState("");
-  const [view, setView] = useState("closed"); // 'closed', 'menu', 'chat'
+  const [shouldSendMessage, setShouldSendMessage] = useState(false);
 
-  const [shouldSend, setShouldSend] = useState(false);
-  const { data, isLoading, error } = useQueryChat(messageToSend, shouldSend);
+  const { data, isLoading, error } = useQueryChat(
+    messageToSend,
+    shouldSendMessage
+  );
 
-  const { saveChat, clearChat, loadChat, getChats, chats, setChats } =
-    useLocalStorageChat();
+  const { saveChat, clearChat, loadChat, chats } = useLocalStorageChat();
 
   const handleInputChange = (e) => {
-    setMessage(e.target.value);
+    setMessageInput(e.target.value);
   };
 
   const handleSendMessage = (messageToSend) => {
     if (messageToSend.trim()) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { id: prevMessages.length + 1, text: messageToSend, sender: "user" },
-      ]);
+      const updatedMessages = [
+        ...chatMessages,
+        { id: chatMessages.length + 1, text: messageToSend, sender: "user" },
+      ];
 
-      setMessage("");
-
+      setChatMessages(updatedMessages);
+      setMessageInput("");
       setMessageToSend(messageToSend);
-      setShouldSend(true);
+      setShouldSendMessage(true);
     }
-  };
-
-  const toggleChat = () => {
-    setView("chat");
   };
 
   const toggleMenu = () => {
-    console.log("Vista actual:", view);
-    if (view === "chat") {
-      setView("menu"); // Chat → Menú
-    } else if (view === "menu") {
-      setView("closed"); // Menú → Cerrado
+    if (currentView === "chat") {
+      setCurrentView("menu");
+    } else if (currentView === "menu") {
+      setCurrentView("closed");
     } else {
-      setView("menu"); // Cerrado → Menú
+      setCurrentView("menu");
     }
   };
 
-  // Debug para ver cambios de vista
-  useEffect(() => {
-    console.log("Vista cambiada a:", view);
-  }, [view]);
-
   const createNewChat = () => {
+    const chatId = Date.now();
     const newChat = {
-      id: Date.now(),
+      id: chatId,
       title: "Nuevo Chat",
       messages: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
 
-    const currentChats = Array.isArray(chats) ? chats : [];
-    setChats([...currentChats, newChat]);
+    setChatMessages([]);
+    setMessageInput("");
+    setMessageToSend("");
+    setShouldSendMessage(false);
+    setCurrentChatId(chatId);
+    setCurrentView("chat");
     saveChat(newChat);
-    setMessages([]);
-    setView("chat");
   };
 
   useEffect(() => {
-    if (data) {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        {
-          id: prevMessages.length + 1,
-          text: data.message || data,
-          sender: "bot",
-        },
-      ]);
-      setShouldSend(false);
+    if (data && currentChatId) {
+      setChatMessages((prevMessages) => {
+        const updatedMessages = [
+          ...prevMessages,
+          {
+            id: prevMessages.length + 1,
+            text: data.message || data,
+            sender: "bot",
+          },
+        ];
+
+        const updatedChat = {
+          id: currentChatId,
+          title: "Chat",
+          messages: updatedMessages,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString(),
+        };
+        saveChat(updatedChat);
+
+        return updatedMessages;
+      });
+      setShouldSendMessage(false);
     }
-  }, [data]);
+  }, [data, currentChatId]);
 
   return (
-    // HeaderBtn
+    // headerBTN
     <div className="relative">
       <div className={chatStyles.toggleContainer}>
         <ButtonComponent
           name={
-            view === "menu" ? (
+            currentView === "menu" ? (
               <svg width="24" height="24" fill="none">
                 <path
                   d="M6 18L18 6M6 6l12 12"
@@ -118,17 +127,17 @@ export const ChatComponent = () => {
       </div>
 
       {/* menu */}
-      {view === "menu" && (
+      {currentView === "menu" && (
         <div className={chatStyles.menuContent}>
-          <h3 className={chatStyles.menuTitle}>
-            Hi there 👋 How can we help you today?
-          </h3>
+          <h1 className={chatStyles.menuTitle}>Hi there 👋</h1>
+          <p className="text-gray-400 text-sm mb-6 px-6">How can we help?</p>
           <ButtonComponent
             name="create new chat"
             onClick={createNewChat}
             className={chatStyles.menuCreateButton}
           />
-          <h3>Chats history</h3>
+
+          {/* history */}
           {chats &&
             Array.isArray(chats) &&
             chats.map((chat) => (
@@ -141,16 +150,83 @@ export const ChatComponent = () => {
                 />
                 <ButtonComponent
                   name="load"
-                  onClick={() => loadChat(chat.id)}
+                  onClick={() => {
+                    const messages = loadChat(chat.id);
+                    setChatMessages(messages);
+                    setCurrentChatId(chat.id);
+                    setCurrentView("chat");
+                  }}
                   className={chatStyles.menuItemLoad}
                 />
               </div>
             ))}
+
+          <div className={chatStyles.menuItems}>
+            <ButtonComponent
+              name={
+                <div
+                  className={`${chatStyles.navItem} ${chatStyles.navItemInactive}`}
+                >
+                  <svg
+                    className={chatStyles.navIcon}
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                  </svg>
+                  <span className={chatStyles.navText}>Home</span>
+                </div>
+              }
+              onClick={toggleMenu}
+              className=""
+            />
+
+            <ButtonComponent
+              name={
+                <div className={`${chatStyles.navItem} ${chatStyles.navItem}`}>
+                  <svg
+                    className={chatStyles.navIcon}
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
+                  </svg>
+                  <span className={chatStyles.navText}>Messages</span>
+                </div>
+              }
+              onClick={toggleMenu}
+              className=""
+            />
+
+            {/* history */}
+            {chats &&
+              Array.isArray(chats) &&
+              chats.map((chat) => (
+                <div className={chatStyles.menuChatItem} key={chat.id}>
+                  {chat.title}
+                  <ButtonComponent
+                    name="delete"
+                    onClick={() => clearChat(chat.id)}
+                    className={chatStyles.menuItemDelete}
+                  />
+                  <ButtonComponent
+                    name="load"
+                    onClick={() => {
+                      const messages = loadChat(chat.id);
+                      setChatMessages(messages);
+                      setCurrentChatId(chat.id);
+                      setCurrentView("chat");
+                    }}
+                    className={chatStyles.menuItemLoad}
+                  />
+                </div>
+              ))}
+          </div>
         </div>
       )}
 
       {/* backBtn */}
-      {view === "chat" && (
+      {currentView === "chat" && (
         <div className={chatStyles.container}>
           <div className={chatStyles.header}>
             <ButtonComponent
@@ -170,16 +246,16 @@ export const ChatComponent = () => {
                 </svg>
               }
               className={chatStyles.backButton}
-              onClick={toggleChat}
+              onClick={toggleMenu}
             />
-            <span className={chatStyles.chatTitle}>Chat</span>
+            <span className={chatStyles.backButton}>Chat</span>
           </div>
 
-          {/* messages */}
+          {/* chat messages */}
           <div className={chatStyles.messagesArea}>
-            {view === "chat" && (
+            {currentView === "chat" && (
               <div className={chatStyles.messagesContainer}>
-                {messages.map((message) => (
+                {chatMessages.map((message) => (
                   <div
                     key={message.id}
                     className={chatStyles.messageContainer[message.sender]}
@@ -207,7 +283,7 @@ export const ChatComponent = () => {
             <div className={chatStyles.inputContainer}>
               <InputComponent
                 placeholder="Type your message..."
-                value={message}
+                value={messageInput}
                 onChange={handleInputChange}
                 className={chatStyles.textInput}
               />
@@ -223,7 +299,7 @@ export const ChatComponent = () => {
                     />
                   </svg>
                 }
-                onClick={() => handleSendMessage(message)}
+                onClick={() => handleSendMessage(messageInput)}
                 className={chatStyles.sendButton}
               />
             </div>
