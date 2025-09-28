@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import ConfigService from "../services/env-services";
+import envServices from "../services/env-services";
 
 export const useQueryChat = (message, enabled = false) => {
   const { data, isLoading, error } = useQuery({
@@ -7,11 +7,11 @@ export const useQueryChat = (message, enabled = false) => {
     networkMode: "online",
     enabled: Boolean(enabled) && Boolean(message) && message.trim().length > 0,
     queryFn: async () => {
-      const response = await fetch(ConfigService.getChatApiUrl(), {
+      const response = await fetch(envServices.ChatApiConfig.url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${ConfigService.getChatApiKey()}`,
+          Authorization: `Bearer ${envServices.ChatApiConfig.key}`,
         },
         body: JSON.stringify({
           model: "gpt-3.5-turbo",
@@ -21,7 +21,7 @@ export const useQueryChat = (message, enabled = false) => {
               content: message,
             },
           ],
-          max_tokens: 150,
+          max_tokens: 500,
           temperature: 0.7,
         }),
       });

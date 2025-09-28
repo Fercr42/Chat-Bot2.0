@@ -1,18 +1,21 @@
-class ConfigService {
-  getChatApiKey() {
-    return API_CONFIG.OPENAI_API_KEY;
+class EnvServices {
+  constructor() {}
+
+  get OpenAiApiKey() {
+    return import.meta.env.VITE_OPENAI_API_KEY;
   }
 
-  getChatApiUrl() {
-    return API_CONFIG.OPENAI_API_URL;
+  get OpenAiApiUrl() {
+    return import.meta.env.VITE_OPENAI_API_URL;
   }
 
-  getChatApiConfig() {
+  get ChatApiConfig() {
     return {
-      key: this.getChatApiKey(),
-      url: this.getChatApiUrl(),
+      key: this.OpenAiApiKey,
+      url: this.OpenAiApiUrl,
     };
   }
 }
 
-export default new ConfigService();
+const envServices = new EnvServices();
+export default envServices;

@@ -11,6 +11,7 @@ export const ChatComponent = () => {
   const [messageInput, setMessageInput] = useState("");
   const [messageToSend, setMessageToSend] = useState("");
   const [shouldSendMessage, setShouldSendMessage] = useState(false);
+  const [theme, setTheme] = useState("Dark");
 
   const { data, isLoading, error } = useQueryChat(
     messageToSend,
@@ -47,12 +48,15 @@ export const ChatComponent = () => {
     }
   };
 
-  const toggleHistory = () => {
-    if (currentView === "menu") {
-      setCurrentView("history");
-    } else if (currentView === "history") {
-      setCurrentView("menu");
-    }
+  const toggleTheme = () => {
+    setTheme(theme === "Dark" ? "Light" : "Dark");
+  };
+
+  const clearChatState = () => {
+    setChatMessages([]);
+    setMessageInput("");
+    setMessageToSend("");
+    setShouldSendMessage(false);
   };
 
   const createNewChat = () => {
@@ -65,17 +69,14 @@ export const ChatComponent = () => {
       updatedAt: new Date().toISOString(),
     };
 
-    setChatMessages([]);
-    setMessageInput("");
-    setMessageToSend("");
-    setShouldSendMessage(false);
+    clearChatState();
     setCurrentChatId(chatId);
     setCurrentView("chat");
     saveChat(newChat);
   };
 
   useEffect(() => {
-    if (data && currentChatId) {
+    if (data && currentChatId && shouldSendMessage) {
       setChatMessages((prevMessages) => {
         const updatedMessages = [
           ...prevMessages,
@@ -99,7 +100,7 @@ export const ChatComponent = () => {
       });
       setShouldSendMessage(false);
     }
-  }, [data, currentChatId]);
+  }, [data, currentChatId, shouldSendMessage, saveChat, chats.length]);
 
   return (
     // headerBTN
@@ -136,22 +137,78 @@ export const ChatComponent = () => {
 
       {/* menu */}
       {currentView === "menu" && (
-        <div className={chatStyles.menuContent}>
-          <h1 className={chatStyles.menuTitle}>Hi there 👋</h1>
-          <p className="text-gray-400 text-sm mb-6 px-6">How can we help?</p>
+        <div
+          className={
+            theme === "Dark"
+              ? chatStyles.menuContentDark
+              : chatStyles.menuContentLight
+          }
+        >
+          <div className="relative">
+            <h1
+              className={
+                theme === "Dark"
+                  ? chatStyles.menuTitle
+                  : chatStyles.menuTitleLight
+              }
+            >
+              Hi there 👋
+            </h1>
+            <div className="relative flex items-center justify-center px-6 mb-6">
+              <p
+                className={
+                  theme === "Dark"
+                    ? "text-gray-400 text-sm"
+                    : "text-gray-600 text-sm"
+                }
+              >
+                How can we help?
+              </p>
+              <ButtonComponent
+                name={
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                  >
+                    <path d="M12 3v1M12 20v1M4.22 4.22l.7.7M18.36 18.36l.7.7M1 12h1M20 12h1M4.22 19.78l.7-.7M18.36 5.64l.7-.7" />
+                    <circle cx="12" cy="12" r="5" />
+                    <path d="M15.5 12A3.5 3.5 0 1 1 12 8.5" />
+                  </svg>
+                }
+                onClick={toggleTheme}
+                className={
+                  theme === "Dark"
+                    ? "text-white hover:text-gray-400 cursor-pointer hover:scale-110 transition-all duration-300 absolute right-6"
+                    : "text-gray-600 hover:text-gray-400 cursor-pointer hover:scale-110 transition-all duration-300 absolute right-6"
+                }
+              />
+            </div>
+          </div>
+
           <ButtonComponent
             name="create new chat"
             onClick={createNewChat}
             className={chatStyles.menuCreateButton}
           />
 
-          <div className={chatStyles.menuItems}>
+          <div
+            className={
+              theme === "Dark"
+                ? chatStyles.menuItemsDark
+                : chatStyles.menuItemsLight
+            }
+          >
             <ButtonComponent
               name={
                 <div
                   className={`${chatStyles.navItem} ${
-                    currentView === "menu"
+                    currentView === "menu" && theme === "Dark"
                       ? chatStyles.navItemActive
+                      : currentView === "menu" && theme === "Light"
+                      ? chatStyles.navItemActiveLight
                       : chatStyles.navItemInactive
                   }`}
                 >
@@ -162,10 +219,18 @@ export const ChatComponent = () => {
                   >
                     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                   </svg>
-                  <span className={chatStyles.navText}>Home</span>
+                  <span
+                    className={
+                      theme === "Dark"
+                        ? chatStyles.navTextDark
+                        : chatStyles.navTextLight
+                    }
+                  >
+                    Home
+                  </span>
                 </div>
               }
-              onClick={toggleHistory}
+              onClick={() => setCurrentView("menu")}
               className=""
             />
 
@@ -173,8 +238,10 @@ export const ChatComponent = () => {
               name={
                 <div
                   className={`${chatStyles.navItem} ${
-                    currentView === "history"
+                    currentView === "history" && theme === "Dark"
                       ? chatStyles.navItemActive
+                      : currentView === "history" && theme === "Light"
+                      ? chatStyles.navItemActiveLight
                       : chatStyles.navItemInactive
                   }`}
                 >
@@ -185,10 +252,18 @@ export const ChatComponent = () => {
                   >
                     <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
                   </svg>
-                  <span className={chatStyles.navText}>Messages</span>
+                  <span
+                    className={
+                      theme === "Dark"
+                        ? chatStyles.navTextDark
+                        : chatStyles.navTextLight
+                    }
+                  >
+                    Messages
+                  </span>
                 </div>
               }
-              onClick={toggleHistory}
+              onClick={() => setCurrentView("history")}
               className=""
             />
           </div>
@@ -197,40 +272,57 @@ export const ChatComponent = () => {
 
       {/* history */}
       {currentView === "history" && (
-        <div className={chatStyles.menuContent}>
+        <div
+          className={
+            theme === "Dark"
+              ? chatStyles.menuContentDark
+              : chatStyles.menuContentLight
+          }
+        >
           {chats &&
             Array.isArray(chats) &&
             chats.map((chat) => (
               <div
-                className="flex items-center text-white justify-between p-4 bg-blue-900 mask-b-to-orange-300 rounded-2xl hover:bg-gray-700 transition-all duration-300 cursor-pointer border border-white mx-6 mb-2 m-3"
+                className="flex items-center text-white p-4 bg-blue-900 mask-b-to-orange-300 rounded-2xl hover:bg-gray-700 transition-all duration-300 cursor-pointer border border-white mx-6 mb-2 m-3"
                 key={chat.id}
               >
                 {chat.title}
-                <ButtonComponent
-                  name="delete"
-                  onClick={() => clearChat(chat.id)}
-                  className={chatStyles.menuItemDelete}
-                />
-                <ButtonComponent
-                  name="load"
-                  onClick={() => {
-                    const messages = loadChat(chat.id);
-                    setChatMessages(messages);
-                    setCurrentChatId(chat.id);
-                    setCurrentView("chat");
-                  }}
-                  className={chatStyles.menuItemLoad}
-                />
+                <div className="flex items-center justify-end ml-auto gap-7">
+                  <ButtonComponent
+                    name="delete"
+                    onClick={() => clearChat(chat.id)}
+                    className={chatStyles.menuItemDelete}
+                  />
+                  <ButtonComponent
+                    name="load"
+                    onClick={() => {
+                      clearChatState();
+                      const messages = loadChat(chat.id);
+                      setChatMessages(messages);
+                      setCurrentChatId(chat.id);
+                      setCurrentView("chat");
+                    }}
+                    className={chatStyles.menuItemLoad}
+                  />
+                </div>
               </div>
             ))}
 
-          <div className={chatStyles.menuItems}>
+          <div
+            className={
+              theme === "Dark"
+                ? chatStyles.menuItemsDark
+                : chatStyles.menuItemsLight
+            }
+          >
             <ButtonComponent
               name={
                 <div
                   className={`${chatStyles.navItem} ${
-                    currentView === "menu"
+                    currentView === "menu" && theme === "Dark"
                       ? chatStyles.navItemActive
+                      : currentView === "menu" && theme === "Light"
+                      ? chatStyles.navItemActiveLight
                       : chatStyles.navItemInactive
                   }`}
                 >
@@ -241,10 +333,18 @@ export const ChatComponent = () => {
                   >
                     <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
                   </svg>
-                  <span className={chatStyles.navText}>Home</span>
+                  <span
+                    className={
+                      theme === "Dark"
+                        ? chatStyles.navTextDark
+                        : chatStyles.navTextLight
+                    }
+                  >
+                    Home
+                  </span>
                 </div>
               }
-              onClick={toggleHistory}
+              onClick={() => setCurrentView("menu")}
               className=""
             />
 
@@ -252,8 +352,10 @@ export const ChatComponent = () => {
               name={
                 <div
                   className={`${chatStyles.navItem} ${
-                    currentView === "history"
+                    currentView === "history" && theme === "Dark"
                       ? chatStyles.navItemActive
+                      : currentView === "history" && theme === "Light"
+                      ? chatStyles.navItemActiveLight
                       : chatStyles.navItemInactive
                   }`}
                 >
@@ -264,48 +366,108 @@ export const ChatComponent = () => {
                   >
                     <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
                   </svg>
-                  <span className={chatStyles.navText}>Messages</span>
+                  <span
+                    className={
+                      theme === "Dark"
+                        ? chatStyles.navTextDark
+                        : chatStyles.navTextLight
+                    }
+                  >
+                    Messages
+                  </span>
                 </div>
               }
-              onClick={toggleHistory}
+              onClick={() => setCurrentView("history")}
               className=""
             />
           </div>
         </div>
       )}
 
-      {/* backBtn */}
+      {/* chatHeader */}
       {currentView === "chat" && (
-        <div className={chatStyles.container}>
-          <div className={chatStyles.header}>
+        <div
+          className={
+            theme === "Dark"
+              ? chatStyles.containerDark
+              : chatStyles.containerLight
+          }
+        >
+          <div
+            className={
+              theme === "Dark" ? chatStyles.headerDark : chatStyles.headerLight
+            }
+          >
             <ButtonComponent
               name={
-                <svg
-                  width="14"
-                  height="14"
-                  className={chatStyles.backIcon}
-                  fill="white"
-                >
-                  <path
-                    d="M10 4L6 8l4 4"
-                    stroke="white"
-                    strokeWidth="2"
-                    fill="none"
-                  />
-                </svg>
+                theme === "Dark" ? (
+                  <svg width="14" height="14" fill="white">
+                    <path
+                      d="M10 4L6 8l4 4"
+                      stroke="white"
+                      strokeWidth="2"
+                      fill="none"
+                    />
+                  </svg>
+                ) : (
+                  <svg width="14" height="14" fill="white">
+                    <path
+                      d="M10 4L6 8l4 4"
+                      stroke="black"
+                      strokeWidth="2"
+                      fill="none"
+                    />
+                  </svg>
+                )
               }
               className={chatStyles.backButton}
               onClick={toggleInterface}
             />
-            <span className="text-white text-xs sm:text-sm md:text-base ml-2">
+            <span
+              className={
+                theme === "Dark"
+                  ? "text-white text-xs sm:text-sm md:text-base ml-2"
+                  : "text-black text-xs sm:text-sm md:text-base ml-2"
+              }
+            >
               Chat
             </span>
+
+            <ButtonComponent
+              name={
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              }
+              onClick={() => setCurrentView("closed")}
+              className={
+                theme === "Dark"
+                  ? "text-white text-lg hover:scale-110 transition-all duration-300 cursor-pointer ml-auto"
+                  : "text-black text-lg hover:scale-110 transition-all duration-300 cursor-pointer ml-auto"
+              }
+            />
           </div>
 
           {/* chat messages */}
-          <div className={chatStyles.messagesArea}>
+          <div
+            className={
+              theme === "Dark"
+                ? chatStyles.messagesAreaDark
+                : chatStyles.messagesAreaLight
+            }
+          >
             {currentView === "chat" && (
-              <div className={chatStyles.messagesContainer}>
+              <div className={chatStyles.messagesContainerDark}>
                 {chatMessages.map((message) => (
                   <div
                     key={message.id}
@@ -318,10 +480,24 @@ export const ChatComponent = () => {
                 ))}
 
                 {isLoading && (
-                  <div className={chatStyles.loadingText}>Typing...</div>
+                  <div
+                    className={
+                      theme === "Dark"
+                        ? chatStyles.loadingTextDark
+                        : chatStyles.loadingTextLight
+                    }
+                  >
+                    Typing...
+                  </div>
                 )}
                 {error && (
-                  <div className={chatStyles.errorText}>
+                  <div
+                    className={
+                      theme === "Dark"
+                        ? chatStyles.errorTextDark
+                        : chatStyles.errorTextLight
+                    }
+                  >
                     Error: {error.message}
                   </div>
                 )}
@@ -330,13 +506,29 @@ export const ChatComponent = () => {
           </div>
 
           {/* input */}
-          <div className={chatStyles.inputArea}>
-            <div className={chatStyles.inputContainer}>
+          <div
+            className={
+              theme === "Dark"
+                ? chatStyles.inputArea
+                : chatStyles.inputAreaLight
+            }
+          >
+            <div
+              className={
+                theme === "Dark"
+                  ? chatStyles.inputContainer
+                  : chatStyles.inputContainerLight
+              }
+            >
               <InputComponent
                 placeholder="Type your message..."
                 value={messageInput}
                 onChange={handleInputChange}
-                className={chatStyles.textInput}
+                className={
+                  theme === "Dark"
+                    ? chatStyles.textInput
+                    : chatStyles.textInputLight
+                }
               />
               <ButtonComponent
                 name={
@@ -351,7 +543,11 @@ export const ChatComponent = () => {
                   </svg>
                 }
                 onClick={() => handleSendMessage(messageInput)}
-                className={chatStyles.sendButton}
+                className={
+                  theme === "Dark"
+                    ? chatStyles.sendButton
+                    : chatStyles.sendButtonLight
+                }
               />
             </div>
           </div>
