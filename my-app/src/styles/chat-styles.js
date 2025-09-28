@@ -4,6 +4,10 @@ export const chatStyles = {
   container:
     "bg-black w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-[600px] sm:h-[500px] md:h-[600px] lg:h-[700px] rounded-2xl flex flex-col mx-auto",
 
+  // Contenedor principal del chat
+  historyContent:
+    "bg-black w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-[600px] sm:h-[500px] md:h-[600px] lg:h-[700px] rounded-2xl flex flex-col mx-auto",
+
   // Header del chat
   header:
     "flex items-center text-center border-b border-gray-700 p-2 sm:p-3 flex-shrink-0",
@@ -46,7 +50,7 @@ export const chatStyles = {
   menuItems:
     "flex justify-around bg-gray-800 items-center py-4 px-2 border-t border-gray-700 mt-auto",
   navItem:
-    "flex flex-col items-center justify-center py-2 px-2 cursor-pointer min-w-0 flex-1 text-white hover:text-gray-400 transition-all duration-300",
+    "flex flex-col items-center justify-center py-2 px-2 cursor-pointer min-w-0 flex-1  hover:text-gray-400 transition-all duration-300",
 
   // Estilos del menú
   menuContent:

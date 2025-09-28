@@ -1,5 +1,3 @@
-import API_CONFIG from "../config/api-config.js";
-
 class ConfigService {
   getChatApiKey() {
     return API_CONFIG.OPENAI_API_KEY;

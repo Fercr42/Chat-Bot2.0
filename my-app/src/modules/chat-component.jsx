@@ -37,12 +37,20 @@ export const ChatComponent = () => {
     }
   };
 
-  const toggleMenu = () => {
+  const toggleInterface = () => {
     if (currentView === "chat") {
-      setCurrentView("menu");
+      setCurrentView("history");
     } else if (currentView === "menu") {
       setCurrentView("closed");
     } else {
+      setCurrentView("menu");
+    }
+  };
+
+  const toggleHistory = () => {
+    if (currentView === "menu") {
+      setCurrentView("history");
+    } else if (currentView === "history") {
       setCurrentView("menu");
     }
   };
@@ -51,7 +59,7 @@ export const ChatComponent = () => {
     const chatId = Date.now();
     const newChat = {
       id: chatId,
-      title: "Nuevo Chat",
+      title: `chat ${chats.length + 1}`,
       messages: [],
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
@@ -80,7 +88,7 @@ export const ChatComponent = () => {
 
         const updatedChat = {
           id: currentChatId,
-          title: "Chat",
+          title: `chat ${chats.length + 1}`,
           messages: updatedMessages,
           createdAt: new Date().toISOString(),
           updatedAt: new Date().toISOString(),
@@ -121,7 +129,7 @@ export const ChatComponent = () => {
               </svg>
             )
           }
-          onClick={toggleMenu}
+          onClick={toggleInterface}
           className={chatStyles.toggleButton}
         />
       </div>
@@ -137,11 +145,66 @@ export const ChatComponent = () => {
             className={chatStyles.menuCreateButton}
           />
 
-          {/* history */}
+          <div className={chatStyles.menuItems}>
+            <ButtonComponent
+              name={
+                <div
+                  className={`${chatStyles.navItem} ${
+                    currentView === "menu"
+                      ? chatStyles.navItemActive
+                      : chatStyles.navItemInactive
+                  }`}
+                >
+                  <svg
+                    className={chatStyles.navIcon}
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z" />
+                  </svg>
+                  <span className={chatStyles.navText}>Home</span>
+                </div>
+              }
+              onClick={toggleHistory}
+              className=""
+            />
+
+            <ButtonComponent
+              name={
+                <div
+                  className={`${chatStyles.navItem} ${
+                    currentView === "history"
+                      ? chatStyles.navItemActive
+                      : chatStyles.navItemInactive
+                  }`}
+                >
+                  <svg
+                    className={chatStyles.navIcon}
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 12H6v-2h12v2zm0-3H6V9h12v2zm0-3H6V6h12v2z" />
+                  </svg>
+                  <span className={chatStyles.navText}>Messages</span>
+                </div>
+              }
+              onClick={toggleHistory}
+              className=""
+            />
+          </div>
+        </div>
+      )}
+
+      {/* history */}
+      {currentView === "history" && (
+        <div className={chatStyles.menuContent}>
           {chats &&
             Array.isArray(chats) &&
             chats.map((chat) => (
-              <div className={chatStyles.menuChatItem} key={chat.id}>
+              <div
+                className="flex items-center text-white justify-between p-4 bg-blue-900 mask-b-to-orange-300 rounded-2xl hover:bg-gray-700 transition-all duration-300 cursor-pointer border border-white mx-6 mb-2 m-3"
+                key={chat.id}
+              >
                 {chat.title}
                 <ButtonComponent
                   name="delete"
@@ -165,7 +228,11 @@ export const ChatComponent = () => {
             <ButtonComponent
               name={
                 <div
-                  className={`${chatStyles.navItem} ${chatStyles.navItemInactive}`}
+                  className={`${chatStyles.navItem} ${
+                    currentView === "menu"
+                      ? chatStyles.navItemActive
+                      : chatStyles.navItemInactive
+                  }`}
                 >
                   <svg
                     className={chatStyles.navIcon}
@@ -177,13 +244,19 @@ export const ChatComponent = () => {
                   <span className={chatStyles.navText}>Home</span>
                 </div>
               }
-              onClick={toggleMenu}
+              onClick={toggleHistory}
               className=""
             />
 
             <ButtonComponent
               name={
-                <div className={`${chatStyles.navItem} ${chatStyles.navItem}`}>
+                <div
+                  className={`${chatStyles.navItem} ${
+                    currentView === "history"
+                      ? chatStyles.navItemActive
+                      : chatStyles.navItemInactive
+                  }`}
+                >
                   <svg
                     className={chatStyles.navIcon}
                     fill="currentColor"
@@ -194,33 +267,9 @@ export const ChatComponent = () => {
                   <span className={chatStyles.navText}>Messages</span>
                 </div>
               }
-              onClick={toggleMenu}
+              onClick={toggleHistory}
               className=""
             />
-
-            {/* history */}
-            {chats &&
-              Array.isArray(chats) &&
-              chats.map((chat) => (
-                <div className={chatStyles.menuChatItem} key={chat.id}>
-                  {chat.title}
-                  <ButtonComponent
-                    name="delete"
-                    onClick={() => clearChat(chat.id)}
-                    className={chatStyles.menuItemDelete}
-                  />
-                  <ButtonComponent
-                    name="load"
-                    onClick={() => {
-                      const messages = loadChat(chat.id);
-                      setChatMessages(messages);
-                      setCurrentChatId(chat.id);
-                      setCurrentView("chat");
-                    }}
-                    className={chatStyles.menuItemLoad}
-                  />
-                </div>
-              ))}
           </div>
         </div>
       )}
@@ -246,9 +295,11 @@ export const ChatComponent = () => {
                 </svg>
               }
               className={chatStyles.backButton}
-              onClick={toggleMenu}
+              onClick={toggleInterface}
             />
-            <span className={chatStyles.backButton}>Chat</span>
+            <span className="text-white text-xs sm:text-sm md:text-base ml-2">
+              Chat
+            </span>
           </div>
 
           {/* chat messages */}
