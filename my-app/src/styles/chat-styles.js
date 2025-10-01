@@ -68,9 +68,9 @@ export const chatStyles = {
 
   // Navegación dentro del menú
   menuItemsDark:
-    "flex justify-around bg-gray-800 items-center py-4 px-2 border-t border-gray-700 mt-auto",
+    "flex justify-around bg-gray-800 items-center py-4 px-2 border- border-gray-700 mt-auto rounded-b-2xl",
   menuItemsLight:
-    "flex justify-around bg-gray-200 items-center py-4 px-2 border-t border-gray-300 mt-auto",
+    "flex justify-around bg-gray-200 items-center py-4 px-2 border-t border-gray-300 mt-auto rounded-b-2xl",
   navItem:
     "flex flex-col items-center justify-center py-2 px-2 cursor-pointer min-w-0 flex-1  hover:text-gray-400 transition-all duration-300",
 
@@ -98,6 +98,6 @@ export const chatStyles = {
   navItemInactiveLight: "text-gray-600",
 
   navIcon: "w-6 h-6 mb-1",
-  navTextDark: "text-xs font-medium truncate",
-  navTextLight: "text-xs font-medium truncate",
+  navTextDark: "text-xs font-medium ",
+  navTextLight: "text-xs font-medium ",
 };
