@@ -13,6 +13,8 @@ export const ChatComponent = () => {
   const [messageToSend, setMessageToSend] = useState("");
   const [shouldSendMessage, setShouldSendMessage] = useState(false);
   const [theme, setTheme] = useState("Dark");
+  const [search, setSearch] = useState("");
+  const [copiedMessageId, setCopiedMessageId] = useState(null);
 
   const { data, isLoading, error } = useQueryChat(
     messageToSend,
@@ -23,6 +25,50 @@ export const ChatComponent = () => {
 
   const handleInputChange = (e) => {
     setMessageInput(e.target.value);
+  };
+
+  const handleSearch = (e) => {
+    setSearch(e.target.value);
+  };
+
+  const handleCopyToClipboard = (text, messageId) => {
+    navigator.clipboard.writeText(text).then(
+      () => {
+        setCopiedMessageId(messageId);
+
+        setTimeout(() => {
+          setCopiedMessageId(null);
+        }, 2000);
+      },
+      (err) => {
+        console.error("error copying to clipboard:", err);
+      }
+    );
+  };
+
+  const getChatDetails = () => {
+    const chat = chats.find((chat) => chat.id === currentChatId);
+
+    if (!chat) {
+      setChatMessages([]);
+      return [];
+    }
+
+    if (!search.trim()) {
+      setChatMessages(chat.messages);
+      return chat.messages;
+    }
+
+    const filteredChatMessages = chat.messages.filter((message) =>
+      message.text.toLowerCase().includes(search.toLowerCase())
+    );
+
+    setChatMessages(filteredChatMessages);
+    return filteredChatMessages;
+  };
+
+  const toggleTheme = () => {
+    setTheme(theme === "Dark" ? "Light" : "Dark");
   };
 
   const handleSendMessage = (messageToSend) => {
@@ -47,10 +93,6 @@ export const ChatComponent = () => {
     } else {
       setCurrentView("menu");
     }
-  };
-
-  const toggleTheme = () => {
-    setTheme(theme === "Dark" ? "Light" : "Dark");
   };
 
   const clearChatState = () => {
@@ -102,6 +144,12 @@ export const ChatComponent = () => {
       setShouldSendMessage(false);
     }
   }, [data, currentChatId, shouldSendMessage, saveChat, chats.length]);
+
+  useEffect(() => {
+    if (currentChatId) {
+      getChatDetails();
+    }
+  }, [search, currentChatId]);
 
   return (
     // headerBTN
@@ -396,7 +444,7 @@ export const ChatComponent = () => {
           </motion.div>
         )}
 
-        {/* chat */}
+        {/* chat header*/}
         {currentView === "chat" && (
           <motion.div
             key="chat"
@@ -442,15 +490,28 @@ export const ChatComponent = () => {
                 className={chatStyles.backButton}
                 onClick={toggleInterface}
               />
-              <span
-                className={
-                  theme === "Dark"
-                    ? "text-white text-xs sm:text-sm md:text-base ml-2"
-                    : "text-black text-xs sm:text-sm md:text-base ml-2"
-                }
-              >
-                Chat
-              </span>
+              <div className="flex-1 flex items-center gap-2 ml-2">
+                <span
+                  className={
+                    theme === "Dark"
+                      ? "text-white text-xs sm:text-sm md:text-base"
+                      : "text-black text-xs sm:text-sm md:text-base"
+                  }
+                >
+                  Chat
+                </span>
+                <input
+                  type="text"
+                  placeholder="Search Messages..."
+                  value={search}
+                  onChange={handleSearch}
+                  className={
+                    theme === "Dark"
+                      ? "flex ml-auto bg-gray-700 text-white text-xs px-3 py-1 rounded-lg outline-none placeholder-gray-400"
+                      : "flex ml-auto bg-gray-200 text-black text-xs px-3 py-1 rounded-lg outline-none placeholder-gray-500"
+                  }
+                />
+              </div>
 
               <ButtonComponent
                 name={
@@ -495,26 +556,112 @@ export const ChatComponent = () => {
                       transition={{ duration: 0.3, ease: "easeOut" }}
                       className={chatStyles.messageContainer[message.sender]}
                     >
-                      <div className={chatStyles.messageBubble[message.sender]}>
-                        {message.text}
+                      <div className="flex items-center gap-2">
+                        <div
+                          className={chatStyles.messageBubble[message.sender]}
+                        >
+                          {message.text}
+                        </div>
+
+                        <div className="relative">
+                          <ButtonComponent
+                            name={
+                              copiedMessageId === message.id ? (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    d="M20 6L9 17l-5-5"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                  />
+                                </svg>
+                              ) : (
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  width="16"
+                                  height="16"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <rect
+                                    x="9"
+                                    y="9"
+                                    width="13"
+                                    height="13"
+                                    rx="2"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                  />
+                                  <rect
+                                    x="3"
+                                    y="3"
+                                    width="13"
+                                    height="13"
+                                    rx="2"
+                                    stroke="currentColor"
+                                    strokeWidth="2"
+                                  />
+                                </svg>
+                              )
+                            }
+                            onClick={() =>
+                              handleCopyToClipboard(message.text, message.id)
+                            }
+                            className={
+                              copiedMessageId === message.id
+                                ? "text-green-500 cursor-pointer scale-110 transition-all duration-300"
+                                : theme === "Dark"
+                                ? "text-gray-400 hover:text-white cursor-pointer hover:scale-110 transition-all duration-300"
+                                : "text-gray-600 hover:text-black cursor-pointer hover:scale-110 transition-all duration-300"
+                            }
+                          />
+                        </div>
                       </div>
                     </motion.div>
                   ))}
 
                   {isLoading && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.3 }}
-                      className={
-                        theme === "Dark"
-                          ? chatStyles.loadingTextDark
-                          : chatStyles.loadingTextLight
-                      }
-                    >
-                      Typing...
-                    </motion.div>
+                    <div className="flex justify-center">
+                      <motion.div
+                        className="flex gap-2 p-4 bg-slate-500 rounded-2xl"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.3 }}
+                      >
+                        <motion.span
+                          className="w-2 h-2 bg-white rounded-full"
+                          animate={{ opacity: [0.3, 1, 0.3] }}
+                          transition={{ repeat: Infinity, duration: 1 }}
+                        />
+                        <motion.span
+                          className="w-2 h-2 bg-white rounded-full"
+                          animate={{ opacity: [0.3, 1, 0.3] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 1,
+                            delay: 0.2,
+                          }}
+                        />
+                        <motion.span
+                          className="w-2 h-2 bg-white rounded-full"
+                          animate={{ opacity: [0.3, 1, 0.3] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 1,
+                            delay: 0.4,
+                          }}
+                        />
+                      </motion.div>
+                    </div>
                   )}
+
                   {error && (
                     <motion.div
                       initial={{ opacity: 0, y: 20, scale: 0.95 }}

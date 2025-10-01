@@ -19,14 +19,14 @@ export const useQueryChat = (message, enabled = false) => {
             {
               role: "system",
               content:
-                "Respond only about the Costa Rica Labor Code. If the user asks about something else, say that you are a labor law assistant and you only answer about the Costa Rica Labor Code.",
+                "Respond only about the Costa Rica Labor Code, you can provide the source of information if the user asks for it. If the user asks about something else, say that you are a labor law assistant and you only answer about the Costa Rica Labor Code.",
             },
             {
               role: "user",
               content: message,
             },
           ],
-          max_tokens: 500,
+          max_tokens: 1500,
           temperature: 0.7,
         }),
       });

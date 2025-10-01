@@ -26,7 +26,7 @@ export const chatStyles = {
   messagesAreaDark:
     "flex-1 bg-gray-900 overflow-y-auto p-2 sm:p-3 space-y-1 sm:space-y-2",
   messagesAreaLight:
-    "flex-1 bg-white overflow-y-auto p-2 sm:p-3 space-y-1 sm:space-y-2",
+    "flex-1 bg-[#f5f5f5] shadow-2xl overflow-y-auto p-2 sm:p-3 space-y-1 sm:space-y-2",
   messagesContainerDark:
     "flex flex-col font-serif-light text-xs sm:text-sm space-y-1 sm:space-y-2",
 
@@ -48,7 +48,7 @@ export const chatStyles = {
   // Área de input
   inputArea: "p-2 sm:p-3 border-t border-gray-700 flex-shrink-0",
   inputAreaLight:
-    "p-2 sm:p-3 border-t border-slate-300 rounded-b-2xl flex-shrink-0 bg-slate-200",
+    "p-2 sm:p-3 border-t border-slate-300 rounded-b-2xl flex-shrink-0 bg-slate-200 shadow-lg",
   inputContainer: "relative flex items-center bg-gray-700 rounded-md",
   inputContainerLight:
     "relative flex items-center bg-white rounded-2xl shadow-lg border border-slate-500",
@@ -62,7 +62,7 @@ export const chatStyles = {
     "absolute right-1 sm:right-2 bg-blue-500 text-white text-xs sm:text-sm p-1.5 sm:p-2 rounded-xl hover:bg-blue-600 transition-all duration-300 cursor-pointer shadow-lg",
   // Botón de toggle
   toggleContainer:
-    "flex items-center justify-center p-2 lg:fixed lg:bottom-4 lg:left-96",
+    "flex items-center justify-center p-2 lg:fixed lg:bottom-4 lg:left-69 z-50",
   toggleButton:
     "bg-gray-700 text-white text-xs sm:text-sm p-2 sm:p-3 rounded-md hover:bg-gray-500 transition-colors cursor-pointer",
 
@@ -76,9 +76,9 @@ export const chatStyles = {
 
   // Estilos del menú
   menuContentDark:
-    "bg-gray-900 relative rounded-3xl shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-[600px] sm:h-[500px] md:h-[600px] lg:h-[700px] flex flex-col mx-auto overflow-hidden",
+    "bg-gray-900 relative rounded-3xl shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-[600px] sm:h-[500px] md:h-[600px] lg:h-[700px] flex flex-col mx-auto ",
   menuContentLight:
-    "bg-[#f5f5f5] relative rounded-3xl shadow-2x1 w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-[600px] sm:h-[500px] md:h-[600px] lg:h-[700px] flex flex-col mx-auto overflow-hidden",
+    "bg-[#f5f5f5] relative rounded-3xl shadow-2xl w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl h-[600px] sm:h-[500px] md:h-[600px] lg:h-[700px] flex flex-col mx-auto ",
   menuTitle: "text-white text-2xl font-bold mb-2 px-6 pt-6",
   menuTitleLight: "text-gray-900 text-2xl font-bold mb-2 px-6 pt-6",
   menuCreateButton:
