@@ -1,8 +1,7 @@
 import { ButtonComponent, InputComponent } from "../shared/index.js";
 import { useState, useEffect } from "react";
-import { useQueryChat } from "../hooks/use-query-chat.hook.jsx";
+import { useQueryChat, useLocalStorageChat } from "../hooks/index.js";
 import { chatStyles } from "../styles/chat-styles.js";
-import { useLocalStorageChat } from "../hooks/use-localStorage-chat.hook.jsx";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MenuComponent,
