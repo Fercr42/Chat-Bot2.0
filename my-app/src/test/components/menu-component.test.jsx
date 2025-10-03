@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { MenuComponent } from "../components/menu-component";
+import { MenuComponent } from "../../components/menu-component";
 
 // Mock de framer-motion
 jest.mock("framer-motion", () => ({

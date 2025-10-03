@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { ButtonComponent } from "../shared/button.component";
+import { ButtonComponent } from "../../shared/button.component";
 
 describe("ButtonComponent", () => {
   it("should render the button with the correct name", () => {

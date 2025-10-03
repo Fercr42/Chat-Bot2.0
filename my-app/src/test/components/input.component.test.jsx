@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { InputComponent } from "../shared/input.component";
+import { InputComponent } from "../../shared/input.component";
 
 describe("InputComponent", () => {
   it("should render the input with the correct value", () => {

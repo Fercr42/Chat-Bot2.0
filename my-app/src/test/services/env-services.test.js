@@ -21,7 +21,7 @@ describe("env-services", () => {
 
   it("should export ChatApiConfig with correct values", () => {
     // Importar después de configurar el mock
-    const envServices = require("../services/env-services");
+    const envServices = require("../../services/env-services");
 
     expect(envServices.ChatApiConfig).toBeDefined();
     expect(envServices.ChatApiConfig.key).toBe("test-api-key");
@@ -44,7 +44,7 @@ describe("env-services", () => {
 
     // Limpiar cache y reimportar
     jest.resetModules();
-    const envServices = require("../services/env-services");
+    const envServices = require("../../services/env-services");
 
     expect(envServices.ChatApiConfig).toBeDefined();
     expect(envServices.ChatApiConfig.key).toBeUndefined();
@@ -66,7 +66,7 @@ describe("env-services", () => {
     });
 
     jest.resetModules();
-    const envServices = require("../services/env-services");
+    const envServices = require("../../services/env-services");
 
     expect(envServices.ChatApiConfig).toBeDefined();
     expect(envServices.ChatApiConfig.key).toBeUndefined();

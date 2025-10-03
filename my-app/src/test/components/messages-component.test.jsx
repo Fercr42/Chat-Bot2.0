@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from "@testing-library/react";
-import { MessagesComponent } from "../components/messages-component";
+import { MessagesComponent } from "../../components/messages-component";
 
 // Mock de framer-motion
 jest.mock("framer-motion", () => ({

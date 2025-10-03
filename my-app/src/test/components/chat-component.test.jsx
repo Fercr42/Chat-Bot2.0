@@ -1,5 +1,5 @@
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
-import { ChatComponent } from "../components/chat-component";
+import { ChatComponent } from "../../components/chat-component";
 
 // Mock de framer-motion
 jest.mock("framer-motion", () => ({

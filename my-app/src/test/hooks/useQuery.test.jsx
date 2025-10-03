@@ -1,6 +1,6 @@
 import { renderHook, act } from "@testing-library/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useQueryChat } from "../hooks/use-query-chat.hook";
+import { useQueryChat } from "../../hooks/use-query-chat.hook";
 
 // Mock del servicio de entorno
 jest.mock("../services/env-services", () => ({

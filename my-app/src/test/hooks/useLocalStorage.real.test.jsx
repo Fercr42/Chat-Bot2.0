@@ -1,5 +1,5 @@
 import { renderHook, act } from "@testing-library/react";
-import { useLocalStorageChat } from "../hooks/use-localStorage-chat.hook.jsx";
+import { useLocalStorageChat } from "../../hooks/use-localStorage-chat.hook.jsx";
 
 // Mock localStorage con Jest
 const localStorageMock = {
