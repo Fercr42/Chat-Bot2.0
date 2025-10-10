@@ -102,14 +102,14 @@ export const ChatComponent = () => {
     }
   }, []);
 
-  const clearChatState = () => {
+  const clearChatState = useCallback(() => {
     setChatMessages([]);
     setMessageInput("");
     setMessageToSend("");
     setShouldSendMessage(false);
-  };
+  }, []);
 
-  const createNewChat = () => {
+  const createNewChat = useCallback(() => {
     const chatId = Date.now();
     const newChat = {
       id: chatId,
@@ -123,7 +123,7 @@ export const ChatComponent = () => {
     setCurrentChatId(chatId);
     setCurrentView("chat");
     saveChat(newChat);
-  };
+  }, [clearChatState, saveChat, chats.length]);
 
   useEffect(() => {
     if (data && currentChatId && shouldSendMessage) {
@@ -203,8 +203,6 @@ export const ChatComponent = () => {
           >
             <MenuComponent
               currentView={currentView}
-              theme={theme}
-              toggleTheme={toggleTheme}
               createNewChat={createNewChat}
               setCurrentView={setCurrentView}
             />
@@ -222,7 +220,6 @@ export const ChatComponent = () => {
           {currentView === "history" && (
             <HistoryComponent
               currentView={currentView}
-              theme={theme}
               chats={chats}
               clearChat={clearChat}
               loadChat={loadChat}
@@ -251,7 +248,6 @@ export const ChatComponent = () => {
             }
           >
             <HeaderChatComponent
-              theme={theme}
               toggleInterface={toggleInterface}
               search={search}
               handleSearch={handleSearch}
@@ -262,7 +258,6 @@ export const ChatComponent = () => {
             {currentView === "chat" && (
               <MessagesComponent
                 currentView={currentView}
-                theme={theme}
                 chatMessages={chatMessages}
                 handleCopyToClipboard={handleCopyToClipboard}
                 copiedMessageId={copiedMessageId}
