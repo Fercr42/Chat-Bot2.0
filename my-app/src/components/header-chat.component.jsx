@@ -1,13 +1,15 @@
 import { chatStyles } from "../styles/chat-styles.js";
 import { ButtonComponent } from "../shared/index.js";
+import { useTheme } from "../hooks/useTheme-hook.jsx";
 
 export const HeaderChatComponent = ({
-  theme,
   toggleInterface,
   search,
   handleSearch,
   setCurrentView,
 }) => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <div
       className={

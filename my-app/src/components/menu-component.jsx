@@ -1,14 +1,15 @@
 import { motion } from "framer-motion";
 import { chatStyles } from "../styles/chat-styles.js";
 import { ButtonComponent } from "../shared/index.js";
+import { useTheme } from "../hooks/useTheme-hook.jsx";
 
 export const MenuComponent = ({
   currentView,
-  theme,
-  toggleTheme,
   createNewChat,
   setCurrentView,
 }) => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <div
       className={

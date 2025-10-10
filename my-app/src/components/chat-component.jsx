@@ -1,6 +1,7 @@
 import { ButtonComponent, InputComponent } from "../shared/index.js";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useQueryChat, useLocalStorageChat } from "../hooks/index.js";
+import { useTheme } from "../hooks/useTheme-hook.jsx";
 import { chatStyles } from "../styles/chat-styles.js";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -17,9 +18,10 @@ export const ChatComponent = () => {
   const [messageInput, setMessageInput] = useState("");
   const [messageToSend, setMessageToSend] = useState("");
   const [shouldSendMessage, setShouldSendMessage] = useState(false);
-  const [theme, setTheme] = useState("Dark");
   const [search, setSearch] = useState("");
   const [copiedMessageId, setCopiedMessageId] = useState(null);
+
+  const { theme, toggleTheme } = useTheme();
 
   const { data, isLoading, error } = useQueryChat(
     messageToSend,
@@ -29,15 +31,15 @@ export const ChatComponent = () => {
 
   const { saveChat, clearChat, loadChat, chats } = useLocalStorageChat();
 
-  const handleInputChange = (e) => {
+  const handleInputChange = useCallback((e) => {
     setMessageInput(e.target.value);
-  };
+  }, []);
 
-  const handleSearch = (e) => {
+  const handleSearch = useCallback((e) => {
     setSearch(e.target.value);
-  };
+  }, []);
 
-  const handleCopyToClipboard = (text, messageId) => {
+  const handleCopyToClipboard = useCallback((text, messageId) => {
     navigator.clipboard.writeText(text).then(
       () => {
         setCopiedMessageId(messageId);
@@ -50,9 +52,9 @@ export const ChatComponent = () => {
         console.error("error copying to clipboard:", err);
       }
     );
-  };
+  }, []);
 
-  const getChatDetails = () => {
+  const getChatDetails = useCallback(() => {
     const chat = chats.find((chat) => chat.id === currentChatId);
 
     if (!chat) {
@@ -71,27 +73,26 @@ export const ChatComponent = () => {
 
     setChatMessages(filteredChatMessages);
     return filteredChatMessages;
-  };
+  }, [chats, currentChatId, search]);
 
-  const toggleTheme = () => {
-    setTheme(theme === "Dark" ? "Light" : "Dark");
-  };
+  const handleSendMessage = useCallback(
+    (messageToSend) => {
+      if (messageToSend.trim()) {
+        const updatedMessages = [
+          ...chatMessages,
+          { id: chatMessages.length + 1, text: messageToSend, sender: "user" },
+        ];
 
-  const handleSendMessage = (messageToSend) => {
-    if (messageToSend.trim()) {
-      const updatedMessages = [
-        ...chatMessages,
-        { id: chatMessages.length + 1, text: messageToSend, sender: "user" },
-      ];
+        setChatMessages(updatedMessages);
+        setMessageInput("");
+        setMessageToSend(messageToSend);
+        setShouldSendMessage(true);
+      }
+    },
+    [chatMessages]
+  );
 
-      setChatMessages(updatedMessages);
-      setMessageInput("");
-      setMessageToSend(messageToSend);
-      setShouldSendMessage(true);
-    }
-  };
-
-  const toggleInterface = () => {
+  const toggleInterface = useCallback(() => {
     if (currentView === "chat") {
       setCurrentView("history");
     } else if (currentView === "menu") {
@@ -99,7 +100,7 @@ export const ChatComponent = () => {
     } else {
       setCurrentView("menu");
     }
-  };
+  }, []);
 
   const clearChatState = () => {
     setChatMessages([]);

@@ -1,15 +1,17 @@
 import { chatStyles } from "../styles/chat-styles.js";
 import { ButtonComponent } from "../shared/index.js";
 import { motion } from "framer-motion";
+import { useTheme } from "../hooks/useTheme-hook.jsx";
 
 export const MessagesComponent = ({
-  theme,
   chatMessages,
   handleCopyToClipboard,
   copiedMessageId,
   isLoading,
   error,
 }) => {
+  const { theme, toggleTheme } = useTheme();
+
   return (
     <div
       className={

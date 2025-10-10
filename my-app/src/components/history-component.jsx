@@ -1,9 +1,9 @@
 import { chatStyles } from "../styles/chat-styles.js";
 import { ButtonComponent } from "../shared/index.js";
+import { useTheme } from "../hooks/useTheme-hook.jsx";
 
 export const HistoryComponent = ({
   currentView,
-  theme,
   chats,
   clearChat,
   loadChat,
@@ -14,6 +14,8 @@ export const HistoryComponent = ({
   setMessageToSend,
   setShouldSendMessage,
 }) => {
+  const { theme, toggleTheme } = useTheme();
+
   const clearChatState = () => {
     setChatMessages([]);
     setMessageInput("");
